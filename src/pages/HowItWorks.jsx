@@ -20,7 +20,7 @@ const BuyPathIcon = () => (
   </svg>
 );
 
-export default function ProtocolPage() {
+export default function HowItWorks() {
   const { isDark, toggleTheme } = useTheme();
 
   return (

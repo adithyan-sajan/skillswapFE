@@ -5,7 +5,7 @@ import SidebarLayout from "./layouts/SidebarLayout";
 
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
-import ProtocolPage from "./pages/ProtocolPage";
+import ProtocolPage from "./pages/HowItWorks";
 
 import Dashboard from "./pages/Dashboard"; 
 import Wallet from "./pages/Wallet";
