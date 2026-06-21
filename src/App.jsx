@@ -1,5 +1,5 @@
 import React from "react";
-import {  Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import SidebarLayout from "./layouts/SidebarLayout";
 
@@ -7,10 +7,10 @@ import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import ProtocolPage from "./pages/HowItWorks";
 
-import Dashboard from "./pages/Dashboard"; 
+import Dashboard from "./pages/Dashboard";
 import Wallet from "./pages/Wallet";
 import Explore from "./pages/Explore";
-
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -24,13 +24,14 @@ export default function App() {
       <Route path="/dashboard" element={<SidebarLayout />}>
         {/* The 'index' route renders inside SidebarLayout when path is EXACTLY /dashboard */}
         <Route index element={<Navigate to="deck" replace />} />
-        
+
         {/* These routes now live inside SidebarLayout */}
         <Route path="deck" element={<Dashboard />} />
         <Route path="wallet" element={<Wallet />} />
         <Route path="explore" element={<Explore />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
-      
+
       {/* REMOVED: <Route path="/wallet" element={<Wallet />} /> */}
       {/* Reason: It was outside the layout, so it wouldn't have your sidebar. */}
     </Routes>
