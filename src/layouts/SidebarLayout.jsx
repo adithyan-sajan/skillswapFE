@@ -57,9 +57,9 @@ export default function SidebarLayout() {
             {!isCollapsed && <span className="whitespace-nowrap">Wallet</span>}
           </Link>
 
-          <Link to="/dashboard/chat" className={getLinkStyles("/dashboard/messages")} title="Messages">
+          <Link to="/dashboard/chat" className={getLinkStyles("/dashboard/chat")} title="Chat">
             <HiChat className="w-6 h-6 flex-shrink-0" />
-            {!isCollapsed && <span className="whitespace-nowrap">Messages</span>}
+            {!isCollapsed && <span className="whitespace-nowrap">Chat</span>}
           </Link>
 
           <Link to="/dashboard/profile" className={getLinkStyles("/dashboard/profile")} title="My Profile">
