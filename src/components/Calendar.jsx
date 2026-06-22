@@ -15,7 +15,7 @@ export default function Calendar() {
     past: [
       { id: "S-711", topic: "React State Hooks", date: "May 28", role: "Student" },
       { id: "S-690", topic: "Intro to Tailwind", date: "May 15", role: "Teacher" },
-    ]
+    ],
   };
 
   const calendarDays = Array.from({ length: 30 }, (_, i) => i + 1);
@@ -23,7 +23,6 @@ export default function Calendar() {
 
   return (
     <div className={`p-4 space-y-4 ${SHARED_CARD_STYLE}`}>
-      
       <div className="flex justify-between items-center bg-slate-100 dark:bg-neutral-800 p-2 border-2 border-black dark:border-white rounded-lg">
         <span className="text-xs font-black uppercase">June 2026</span>
         <span className="text-[10px] font-bold text-black/40 dark:text-white/40">Grid View</span>
@@ -33,14 +32,7 @@ export default function Calendar() {
         {calendarDays.map((day) => {
           const isBooked = activeDays.includes(day);
           return (
-            <div 
-              key={day} 
-              className={`p-1.5 border-2 rounded-lg transition-all ${
-                isBooked 
-                  ? "bg-indigo-600 text-white dark:bg-orange-400 dark:text-black font-black border-black dark:border-white scale-105" 
-                  : "border-black/10 dark:border-white/10 text-black/40 dark:text-white/30"
-              }`}
-            >
+            <div key={day} className={`p-1.5 border-2 rounded-lg transition-all ${isBooked ? "bg-indigo-600 text-white dark:bg-orange-400 dark:text-black font-black border-black dark:border-white scale-105" : "border-black/10 dark:border-white/10 text-black/40 dark:text-white/30"}`}>
               {day}
             </div>
           );
@@ -48,24 +40,10 @@ export default function Calendar() {
       </div>
 
       <div className="grid grid-cols-2 border-t-4 border-black dark:border-white pt-4 gap-2">
-        <button 
-          onClick={() => setTimelineTab("future")}
-          className={`py-1.5 text-[11px] font-black uppercase border-2 rounded-lg transition-all ${
-            timelineTab === "future" 
-              ? "bg-black text-white dark:bg-white dark:text-black border-black" 
-              : "border-transparent text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white"
-          }`}
-        >
+        <button onClick={() => setTimelineTab("future")} className={`py-1.5 text-[11px] font-black uppercase border-2 rounded-lg transition-all ${timelineTab === "future" ? "bg-black text-white dark:bg-white dark:text-black border-black" : "border-transparent text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white"}`}>
           Upcoming Slots
         </button>
-        <button 
-          onClick={() => setTimelineTab("past")}
-          className={`py-1.5 text-[11px] font-black uppercase border-2 rounded-lg transition-all ${
-            timelineTab === "past" 
-              ? "bg-black text-white dark:bg-white dark:text-black border-black" 
-              : "border-transparent text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white"
-          }`}
-        >
+        <button onClick={() => setTimelineTab("past")} className={`py-1.5 text-[11px] font-black uppercase border-2 rounded-lg transition-all ${timelineTab === "past" ? "bg-black text-white dark:bg-white dark:text-black border-black" : "border-transparent text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white"}`}>
           Past Logs
         </button>
       </div>
@@ -83,7 +61,6 @@ export default function Calendar() {
           </div>
         ))}
       </div>
-
     </div>
   );
 }

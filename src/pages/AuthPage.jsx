@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { HiSun, HiMoon, HiArrowNarrowLeft, HiLockClosed, HiMail, HiUser } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import { PRESS_ANIMATION } from "./HowItWorks";
 
 // Shared container style with your single vibrant shadow color
 const SHARED_CARD_STYLE = "border-4 border-black dark:border-white bg-white dark:bg-[#151515] rounded-xl shadow-[6px_6px_0px_0px_#4f46e5] dark:shadow-[6px_6px_0px_0px_#f97316]";
@@ -26,9 +27,12 @@ export default function AuthPage() {
             <span className="text-xs font-black tracking-tighter uppercase hidden sm:inline">Skill Swap</span>
           </div>
 
-          <button onClick={toggleTheme} className="p-3 text-neutral-500 hover:text-black dark:hover:text-white transition-colors mr-[-16px]">
-            {isDark ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
-          </button>
+            <button 
+              onClick={toggleTheme} 
+              className={`p-2.5 border-2 border-black dark:border-white rounded-xl bg-white dark:bg-[#111] hover:bg-slate-100 dark:hover:bg-neutral-900 transition-all flex items-center justify-center text-black dark:text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] ${PRESS_ANIMATION}`}
+            >
+              {isDark ? <HiSun className="w-4 h-4" /> : <HiMoon className="w-4 h-4" />}
+            </button>
         </div>
       </nav>
 

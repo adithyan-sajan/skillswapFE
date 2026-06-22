@@ -9,8 +9,9 @@ import ProtocolPage from "./pages/HowItWorks";
 
 import Dashboard from "./pages/Dashboard";
 import Wallet from "./pages/Wallet";
-import Explore from "./pages/Explore";
+import Explore from "./pages/ExplorePage";
 import Profile from "./pages/Profile";
+import Chat from "./pages/Chat";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="wallet" element={<Wallet />} />
         <Route path="explore" element={<Explore />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="chat" element={<Chat />} />
       </Route>
 
       {/* REMOVED: <Route path="/wallet" element={<Wallet />} /> */}

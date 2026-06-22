@@ -1,48 +1,14 @@
 import React, { useState } from "react";
 import { HiSearch } from "react-icons/hi";
+import { motion } from "framer-motion";
+import ExploreCard from "../components/ExploreCard"; // Importing your new component
 
-const LanguageIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2M4 5c.6 4.3 3.6 8.3 8 10M17 21l-3-7-3 7M12.2 17h3.6M14 5c-.5 2.5-2 5-4.5 7" />
-  </svg>
-);
-
-const TechIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M22 10v6M2 10l10-5 10 5-10 5zM6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-  </svg>
-);
-
-const CreativeIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
-    <circle cx="7.5" cy="10.5" r="1.5" fill="currentColor" />
-    <circle cx="11.5" cy="7.5" r="1.5" fill="currentColor" />
-    <circle cx="16.5" cy="9.5" r="1.5" fill="currentColor" />
-    <circle cx="15.5" cy="14.5" r="1.5" fill="currentColor" />
-  </svg>
-);
-
-const BusinessIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M20 7h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM9 4h6v3H9V4zm11 16H4V9h16v11z" />
-  </svg>
-);
-
-const MiscIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" />
-    <circle cx="17" cy="18" r="2" />
-  </svg>
-);
-
-const ArrowRightIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current" strokeWidth="2.5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-  </svg>
-);
-
-const SHARED_CARD_STYLE = "border-4 border-black dark:border-white bg-white dark:bg-[#111] rounded-xl shadow-[6px_6px_0px_0px_#4f46e5] dark:shadow-[6px_6px_0px_0px_#f97316]";
+// --- KEEP YOUR ICON COMPONENTS & MOCK_SKILLS ARRAY HERE ---
+const LanguageIcon = () => ( <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2M4 5c.6 4.3 3.6 8.3 8 10M17 21l-3-7-3 7M12.2 17h3.6M14 5c-.5 2.5-2 5-4.5 7" /></svg>);
+const TechIcon = () => ( <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M22 10v6M2 10l10-5 10 5-10 5zM6 12v5c0 2 2 3 6 3s6-1 6-3v-5" /></svg>);
+const CreativeIcon = () => ( <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor" /><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor" /><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor" /><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor" /></svg>);
+const BusinessIcon = () => ( <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM9 4h6v3H9V4zm11 16H4V9h16v11z" /></svg>);
+const MiscIcon = () => ( <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-current text-indigo-600 dark:text-orange-400" fill="none" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7"/><circle cx="17" cy="18" r="2" /></svg>);
 
 const MOCK_SKILLS = [
   { id: 1, user: "Alex_Baker", skill: "Conversational Japanese", cat: "languages", icon: LanguageIcon, cost: 1.5, desc: "Practice fluid conversational structures, casual slangs, and basic pitch accent correction.", level: "Intermediate", dateAdded: "2026-06-01" },
@@ -53,6 +19,15 @@ const MOCK_SKILLS = [
   { id: 6, user: "Lingo_Guru", skill: "Advanced Spanish Subjunctive", cat: "languages", icon: LanguageIcon, cost: 1.2, desc: "Break past plateaus by mastering complex conditional moods, triggers, and idiomatic speech templates.", level: "Advanced", dateAdded: "2026-05-15" },
   { id: 7, user: "Tone_Craft", skill: "Guitar Setup & Intonation", cat: "misc", icon: MiscIcon, cost: 1.0, desc: "Adjust truss rods, set saddle heights, cut nut slots, and fix scale lengths to stop fret buzz.", level: "Advanced", dateAdded: "2026-06-08" },
 ];
+
+// Framer Motion parent container variant for staggering
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 } 
+  }
+};
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -139,59 +114,16 @@ export default function ExplorePage() {
           <p className="text-xs font-black uppercase tracking-wide text-black/40 dark:text-white/40">⚡ No available network nodes match your metrics ⚡</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedSkills.map((node) => {
-            const IconComponent = node.icon;
-            return (
-              <div 
-                key={node.id} 
-                className={`p-5 flex flex-col justify-between relative transition-transform duration-150 group ${SHARED_CARD_STYLE}`}
-              >
-                <div>
-                  {/* Micro Header */}
-                  <div className="flex justify-between items-start border-b-2 border-black dark:border-white/20 pb-3 mb-3.5">
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 bg-slate-50 dark:bg-neutral-900 rounded-xl border-2 border-black dark:border-white/40">
-                        <IconComponent />
-                      </div>
-                      <div>
-                        <span className="text-[9px] font-black text-black/40 dark:text-white/40 block uppercase">PEER HOST</span>
-                        <span className="text-xs font-black uppercase tracking-tight text-indigo-600 dark:text-orange-400 hover:underline cursor-pointer">@{node.user}</span>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-md border-2 border-black dark:border-white bg-slate-100 dark:bg-neutral-800 text-black dark:text-white uppercase">
-                      {node.level}
-                    </span>
-                  </div>
-
-                  {/* Body Content */}
-                  <div className="space-y-1.5">
-                    <h3 className="text-sm font-black uppercase tracking-tight leading-snug text-slate-900 dark:text-white">
-                      {node.skill}
-                    </h3>
-                    <p className="text-xs text-slate-600 dark:text-neutral-400 font-bold leading-relaxed line-clamp-3">
-                      {node.desc}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Footer Drawer */}
-                <div className="mt-5 pt-3 border-t-2 border-black dark:border-white/20 flex items-center justify-between gap-2">
-                  <div className="font-mono">
-                    <span className="text-[9px] font-black text-black/40 dark:text-white/40 block uppercase">EXCHANGE COST</span>
-                    <span className="text-xs font-black uppercase flex items-center gap-1">
-                      🪙 {node.cost.toFixed(2)} <span className="text-[10px] text-black/40 dark:text-white/40 font-bold">SKL/hr</span>
-                    </span>
-                  </div>
-
-                  <button className="h-9 px-3.5 bg-black text-white dark:bg-white dark:text-black text-xs font-black uppercase tracking-tight rounded-xl border-2 border-black dark:border-white hover:opacity-90 transition-all flex items-center gap-1.5 active:scale-95 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
-                    Request Swap <ArrowRightIcon />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <motion.div 
+          variants={containerVariants} 
+          initial="hidden" 
+          animate="show" 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {sortedSkills.map((node) => (
+            <ExploreCard key={node.id} {...node} />
+          ))}
+        </motion.div>
       )}
     </div>
   );

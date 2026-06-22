@@ -79,9 +79,9 @@ export default function Dashboard() {
           <div className="border-b-4 border-black dark:border-white pb-3">
             <h3 className="text-sm font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 inline-block rounded-md">📅 Calendar</h3>
           </div>
-          <div className={`p-4 ${SHARED_CARD_STYLE}`}>
-            <Calendar />
-          </div>
+
+          {/* Simply render the component directly */}
+          <Calendar />
         </div>
       </section>
     </div>
