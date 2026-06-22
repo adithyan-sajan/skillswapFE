@@ -12,6 +12,7 @@ import SidebarLayout from "./layouts/SidebarLayout";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import ProtocolPage from "./pages/HowItWorks";
+import ErrorTemplate from "./pages/ErrorTemplate";
 
 // ==========================================
 // 3. APP PAGES (User Facing)
@@ -21,6 +22,7 @@ import Wallet from "./pages/Wallet";
 import Explore from "./pages/ExplorePage";
 import Profile from "./pages/Profile";
 import Chat from "./pages/Chat";
+import Session from "./pages/Session"; // <-- Imported the new Session room
 
 // ==========================================
 // 4. ADMIN PORTAL (From /admin folder)
@@ -56,6 +58,9 @@ export default function App() {
         <Route path="wallet" element={<Wallet />} />
         <Route path="chat" element={<Chat />} />
         <Route path="profile" element={<Profile />} />
+        
+        {/* <-- Added the Live Classroom Route --> */}
+        <Route path="session/:roomId" element={<Session />} /> 
       </Route>
 
       {/* -------------------------------------------
@@ -74,10 +79,13 @@ export default function App() {
       </Route>
 
       {/* -------------------------------------------
-          FALLBACK ROUTE (404 Not Found)
-          Redirects lost users back home.
+          EXPLICIT ERROR STATUS PAGES
       --------------------------------------------- */}
-      {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
+      <Route path="/access-denied" element={<ErrorTemplate code="403" title="Nice try, hacker" message="You don't have clearance for this room yet. Trade some more skills, rank up your member rating, and come back when you're invited." />} />
+
+      <Route path="/maintenance" element={<ErrorTemplate code="503" title="Under the hood" message="We're currently rewiring the infrastructure to handle your massive brains. Grab a coffee, stretch your legs, and try refreshing in a minute." />} />
+
+      <Route path="*" element={<ErrorTemplate code="404" title="You hit a dead end" message="Whatever you're looking for, it isn't here. Either someone gave you a broken link, or you're looking for skills you can't learn on the internet." />} />
     </Routes>
   );
 }

@@ -4,8 +4,11 @@ import {
   HiGlobeAlt, HiLocationMarker, HiAcademicCap,
   HiBadgeCheck
 } from "react-icons/hi";
+import { 
+  FaGithub, FaLinkedin, FaTwitter 
+} from "react-icons/fa"; // Added for social slots
+import ProfileCard from "../component/ProfileCard";
 
-// Classic solid Neo-brutalist border and layout shadows
 const SHARED_CARD_STYLE = "border-4 border-black dark:border-white bg-white dark:bg-[#111] rounded-xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]";
 
 export default function Profile() {
@@ -23,6 +26,13 @@ export default function Profile() {
     skillsOffered: ["React Architecture", "Custom Hooks", "Tailwind UI Layouts"],
     skillsDesired: ["Conversational Japanese", "Japanese Pronunciation", "Rust Programming"],
     
+    // Social links slot
+    socials: {
+      github: "https://github.com",
+      linkedin: "https://linkedin.com",
+      twitter: "https://twitter.com"
+    },
+
     qualifications: [
       { id: 1, title: "Senior Staff Engineer", issuer: "Tech Corp", verified: true },
       { id: 2, title: "Japanese Language Certificate (N2)", issuer: "Japan Foundation", verified: true },
@@ -50,82 +60,105 @@ export default function Profile() {
       
       {/* 1. MAIN ACCOUNT INFO & METRICS */}
       <div className={SHARED_CARD_STYLE + " p-6 md:p-8"}>
-        <div className="flex flex-col xl:flex-row justify-between items-stretch gap-6 border-b-4 border-black dark:border-white pb-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* Profile Header Block */}
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 flex-1 w-full">
-            
-            {/* PROFILE PICTURE BOX (80% frame size adjustment) */}
-            <div className="w-32 h-32 md:w-40 md:h-40 xl:w-48 xl:h-48 shrink-0 rounded-2xl border-4 border-black dark:border-white overflow-hidden bg-slate-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
-              {profileData.avatarUrl ? (
-                <img 
-                  src={profileData.avatarUrl} 
-                  alt={profileData.username} 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-neutral-800 font-black text-4xl">
-                  {profileData.username.charAt(0).toUpperCase()}
-                </div>
-              )}
-            </div>
+          {/* PROFILE CARD COLUMN - Left side (Shrunk to 3 spans to squeeze out horizontal white space) */}
+          <div className="lg:col-span-3 flex flex-col justify-center items-center min-w-[240px]">
+            <ProfileCard
+              name="Javi A. Torres"
+              title="Software Engineer"
+              handle="javicodes"
+              status="Online"
+              contactText="Contact Me"
+              avatarUrl={profileData.avatarUrl}
+              showUserInfo={false}
+              enableTilt={true}
+              enableMobileTilt={false}
+              onContactClick={() => console.log('Contact clicked')}
+              behindGlowColor="rgba(0, 0, 0, 0.1)"
+              iconUrl=""
+              behindGlowEnabled={true}
+              innerGradient="linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%)"
+              className="h-full w-full object-cover"
+            />
+          </div>
 
-            {/* Profile Info Fields */}
-            <div className="space-y-4 flex-1 w-full text-center md:text-left flex flex-col justify-between py-1">
-              <div>
-                <span className="text-[10px] font-black text-black/50 dark:text-white/50 block uppercase tracking-widest mb-1">Community Profile</span>
-                <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-black dark:text-white">
-                  @{profileData.username}
-                </h1>
+          {/* DETAIL & INTEGRATED METRICS PANEL - Right side (Expanded to 9 spans) */}
+          <div className="lg:col-span-9 flex flex-col justify-between space-y-6">
+            
+            {/* Upper Content Area */}
+            <div className="space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-4 border-black dark:border-white pb-4">
+                <div>
+                  <span className="text-[11px] font-black text-black/50 dark:text-white/50 block uppercase tracking-widest mb-1">Community Profile</span>
+                  {/* Made the text larger and punchier */}
+                  <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-black dark:text-white">
+                    @{profileData.username}
+                  </h1>
+                </div>
+                <div className="flex flex-wrap items-center gap-2.5 sm:justify-end">
+                  <span className="text-sm font-black px-3 py-1.5 border-2 border-black dark:border-white bg-black text-white dark:bg-white dark:text-black uppercase rounded-md">
+                    {profileData.rank}
+                  </span>
+                  <div className="flex items-center gap-1 text-sm font-black uppercase text-amber-600 dark:text-amber-400 bg-amber-500/10 border-2 border-amber-500/40 px-3 py-1.5 rounded-md">
+                    <HiStar className="w-4 h-4 fill-current" /> {profileData.rating}
+                  </div>
+                </div>
               </div>
 
-              {/* Location & Personal Website links */}
-              <div className="flex flex-wrap justify-center md:justify-start gap-4 text-xs font-bold text-black/80 dark:text-white/80">
+              {/* Location, Links & Social Slots */}
+              <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-black dark:text-white">
                 <span className="flex items-center gap-1 bg-slate-100 dark:bg-neutral-900 border-2 border-black dark:border-white px-2.5 py-1 rounded-md">
-                  <HiLocationMarker className="w-4 h-4 text-black dark:text-white" /> {profileData.location}
+                  <HiLocationMarker className="w-4 h-4" /> {profileData.location}
                 </span>
-                <a href={profileData.website} target="_blank" rel="noreferrer" className="flex items-center gap-1 bg-slate-100 dark:bg-neutral-900 border-2 border-black dark:border-white px-2.5 py-1 rounded-md hover:underline text-black dark:text-white">
+                <a href={profileData.website} target="_blank" rel="noreferrer" className="flex items-center gap-1 bg-slate-100 dark:bg-neutral-900 border-2 border-black dark:border-white px-2.5 py-1 rounded-md hover:bg-slate-200 dark:hover:bg-neutral-800">
                   <HiGlobeAlt className="w-4 h-4" /> {profileData.website.replace("https://", "")}
                 </a>
+
+                {/* Social Media Slots Container */}
+                <div className="flex items-center gap-1.5 border-2 border-black dark:border-white bg-amber-400 dark:bg-amber-500 p-0.5 rounded-md shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  <a href={profileData.socials.github} target="_blank" rel="noreferrer" className="p-1.5 hover:bg-black hover:text-white dark:hover:text-black dark:hover:bg-white rounded transition-colors text-black" aria-label="GitHub">
+                    <FaGithub className="w-4 h-4" />
+                  </a>
+                  <a href={profileData.socials.linkedin} target="_blank" rel="noreferrer" className="p-1.5 hover:bg-black hover:text-white dark:hover:text-black dark:hover:bg-white rounded transition-colors text-black" aria-label="LinkedIn">
+                    <FaLinkedin className="w-4 h-4" />
+                  </a>
+                  <a href={profileData.socials.twitter} target="_blank" rel="noreferrer" className="p-1.5 hover:bg-black hover:text-white dark:hover:text-black dark:hover:bg-white rounded transition-colors text-black" aria-label="Twitter">
+                    <FaTwitter className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
 
-              <p className="text-sm font-bold text-black/70 dark:text-white/70 max-w-2xl leading-relaxed">
+              <p className="text-base font-bold text-black/80 dark:text-white/80 leading-relaxed">
                 {profileData.bio}
               </p>
             </div>
-          </div>
 
-          {/* Member Status & Score */}
-          <div className="flex flex-row xl:flex-col justify-between xl:justify-start items-center xl:items-end gap-3 shrink-0 w-full xl:w-auto xl:border-l-4 xl:border-black dark:xl:border-white xl:pl-6">
-            <span className="text-sm font-black px-4 py-2 border-2 border-black dark:border-white bg-black text-white dark:bg-white dark:text-black uppercase rounded-md shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)]">
-              {profileData.rank}
-            </span>
-            <div className="flex items-center gap-1.5 text-xs font-black uppercase text-amber-600 dark:text-amber-400 bg-amber-500/10 border-2 border-amber-500/40 px-3 py-1.5 rounded-md">
-              <HiStar className="w-4 h-4 fill-current" /> {profileData.rating} Rating
+            {/* INTEGRATED 4-TRACKER PANEL (Beefed up with extra padding and slightly bigger text layouts) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              {[
+                { icon: HiUserGroup, label: "Swaps Completed", val: `${profileData.stats.totalSwaps} times` },
+                { icon: HiClock, label: "Time I've Taught", val: `${profileData.stats.hoursTaught} hrs` },
+                { icon: HiCheckCircle, label: "Time I've Learned", val: `${profileData.stats.hoursLearned} hrs` },
+                { icon: HiBadgeCheck, label: "Attendance Record", val: "100% Reliable" }
+              ].map((stat, idx) => (
+                <div key={idx} className="border-2 border-black dark:border-white p-45 md:p-5 bg-slate-50 dark:bg-neutral-900/40 rounded-xl flex items-center gap-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]">
+                  <div className="p-2.5 bg-white dark:bg-[#111] border-2 border-black dark:border-white rounded-lg shrink-0 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                    <stat.icon className="w-6 h-6 text-black dark:text-white" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider block text-black/50 dark:text-white/50">{stat.label}</span>
+                    <span className="text-lg font-black uppercase tracking-tight block text-black dark:text-white mt-0.5">{stat.val}</span>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        </div>
 
-        {/* 4-Column Simple Stats (Bigger values and labels layout) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: HiUserGroup, label: "Total Swaps Completed", val: `${profileData.stats.totalSwaps} times` },
-            { icon: HiClock, label: "Time I've Taught", val: `${profileData.stats.hoursTaught} hours` },
-            { icon: HiCheckCircle, label: "Time I've Learned", val: `${profileData.stats.hoursLearned} hours` },
-            { icon: HiBadgeCheck, label: "Attendance Record", val: "100% Reliable" }
-          ].map((stat, idx) => (
-            <div key={idx} className="border-2 border-black dark:border-white p-4 bg-slate-50 dark:bg-neutral-900 rounded-xl">
-              <div className="flex items-center gap-1.5 text-black dark:text-white mb-1.5 opacity-90">
-                <stat.icon className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-wider">{stat.label}</span>
-              </div>
-              <span className="text-xl font-black uppercase tracking-tight block text-black dark:text-white">{stat.val}</span>
-            </div>
-          ))}
+          </div>
         </div>
       </div>
 
-      {/* 2. SKILL TAG SECTIONS (Color Fixed to high contrast Emerald & Sky) */}
+      {/* 2. SKILL TAG SECTIONS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className={SHARED_CARD_STYLE + " p-6"}>
           <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight border-b-4 border-black dark:border-white pb-3 mb-4 text-emerald-700 dark:text-emerald-400">
@@ -173,8 +206,6 @@ export default function Profile() {
         </div>
 
         <div className="p-6 bg-white dark:bg-[#111]">
-          
-          {/* TAB A: SCHEDULE & BOOKINGS (Legibility and header visibility maxed out) */}
           {activeTab === "schedule" && (
             <div className="space-y-8">
               <div>
@@ -235,7 +266,6 @@ export default function Profile() {
             </div>
           )}
 
-          {/* TAB B: QUALIFICATIONS LIST */}
           {activeTab === "qualifications" && (
             <div className="space-y-4">
               <div className="flex justify-between items-center border-b-2 border-black dark:border-white/20 pb-3">
@@ -271,7 +301,6 @@ export default function Profile() {
             </div>
           )}
 
-          {/* TAB C: COMMUNITY MEMBER REVIEWS */}
           {activeTab === "reviews" && (
             <div className="space-y-4">
               <h4 className="text-xs font-black uppercase tracking-wider border-b-2 border-black dark:border-white/20 pb-3 text-black/60 dark:text-white/60">What other members say</h4>
@@ -293,7 +322,6 @@ export default function Profile() {
               </div>
             </div>
           )}
-
         </div>
       </div>
 

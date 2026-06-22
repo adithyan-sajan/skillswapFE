@@ -4,7 +4,8 @@ import { HiArrowRight, HiTranslate, HiColorSwatch, HiSpeakerphone, HiAcademicCap
 import { Link } from "react-router-dom";
 import TextType from "../component/TextType";
 import DotGrid from "../component/DotGrid";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
+import PublicFooter from "../components/PublicFooter";
 
 const SunIcon = () => (
   <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current" strokeWidth="2.5" strokeLinecap="round">
@@ -47,17 +48,17 @@ const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 } 
-  }
+    transition: { staggerChildren: 0.15 },
+  },
 };
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 100, damping: 12 } 
-  }
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 100, damping: 12 },
+  },
 };
 
 export default function LandingPage() {
@@ -65,7 +66,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen w-full bg-white dark:bg-[#111] text-black dark:text-white font-mono antialiased transition-colors duration-150 flex flex-col relative overflow-hidden">
-      
       {/* GLOBAL BACKGROUND */}
       <div className="fixed inset-0 z-0 pointer-events-auto">
         <DotGrid dotSize={4} gap={20} baseColor={isDark ? "#222222" : "#E2E8F0"} activeColor={isDark ? "#F97316" : "#4F46E5"} proximity={120} shockRadius={220} shockStrength={5} resistance={700} returnDuration={1.4} />
@@ -93,11 +93,9 @@ export default function LandingPage() {
       {/* HERO SECTION */}
       <div className="w-full relative z-10 border-b-4 border-black dark:border-white bg-transparent">
         <header className="max-w-screen-2xl mx-auto border-x-4 border-black dark:border-white pt-40 pb-24 px-6 relative">
-          
           <motion.div variants={containerVariants} initial="hidden" animate="show">
             <motion.div variants={itemVariants} className="flex items-center gap-3 mb-8 text-[11px] font-black uppercase tracking-wider text-black/50 dark:text-white/50">
-              <div className="h-[4px] w-12 bg-indigo-600 dark:bg-orange-400 border border-black dark:border-white" />
-              A Cashless Knowledge Community
+              <div className="h-[4px] w-12 bg-indigo-600 dark:bg-orange-400 border border-black dark:border-white" />A Cashless Knowledge Community
             </motion.div>
 
             <motion.div variants={itemVariants} className="mb-6">
@@ -132,13 +130,7 @@ export default function LandingPage() {
             <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-black dark:text-white">The Core Cycle</h2>
           </div>
 
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-3 border-t-4 border-black dark:border-white divide-y-4 md:divide-y-0 md:divide-x-4 divide-black dark:divide-white bg-white/80 dark:bg-[#111]/80"
-          >
+          <motion.div variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="grid grid-cols-1 md:grid-cols-3 border-t-4 border-black dark:border-white divide-y-4 md:divide-y-0 md:divide-x-4 divide-black dark:divide-white bg-white/80 dark:bg-[#111]/80">
             <motion.div variants={itemVariants} className="py-10 px-6 flex flex-col items-start gap-4 group">
               <div className="flex items-center gap-3 w-full">
                 <div className="p-2.5 bg-slate-50 dark:bg-neutral-900 rounded-xl border-2 border-black dark:border-white flex-shrink-0">
@@ -180,13 +172,7 @@ export default function LandingPage() {
           </div>
 
           <div className="px-6">
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.1 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-            >
+            <motion.div variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { icon: HiTranslate, label: "Languages", desc: "Trade fluent conversation practice in French, Spanish, Japanese, or Arabic." },
                 { icon: HiColorSwatch, label: "Arts and Creative", desc: "Exchange lessons on video editing, digital painting, photography, or pastry baking." },
@@ -206,6 +192,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      <PublicFooter />
     </div>
   );
 }

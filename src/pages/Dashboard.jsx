@@ -14,13 +14,32 @@ export default function Dashboard() {
     { label: "Confirmed Events", value: "2 Sessions", icon: HiCalendar, color: "text-purple-500" },
   ];
 
+  // Generate dynamic times to test the countdown logic in SessionCard
+  const now = new Date();
+  const liveTime = new Date(now.getTime() + 2 * 60000).toISOString(); // 2 mins from now
+  const futureTime = new Date(now.getTime() + 24 * 60 * 60000).toISOString(); // Tomorrow
+
   const upcomingSessions = [
-    { id: "S-902", role: "Student", topic: "Advanced Auto-Layout in Figma", partner: "StudioMina", time: "Today at 20:00 UTC", status: "Confirmed" },
-    { id: "S-844", role: "Instructor", topic: "Intro to Docker Containers", partner: "DevAlex", time: "Tomorrow at 14:30 UTC", status: "Confirmed" },
+    { 
+      id: "room_789xyz", 
+      role: "Student", 
+      topic: "Advanced Auto-Layout in Figma", 
+      peer: "StudioMina", 
+      startTime: liveTime, 
+      duration: 60 
+    },
+    { 
+      id: "room_456abc", 
+      role: "Teacher", 
+      topic: "Intro to Docker Containers", 
+      peer: "DevAlex", 
+      startTime: futureTime, 
+      duration: 30 
+    },
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 mb-5 max-w-7xl mx-auto">
       {/* 1. HERO BANNER AREA */}
       <div className={`p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 ${SHARED_CARD_STYLE}`}>
         <div className="space-y-3">
@@ -59,7 +78,7 @@ export default function Dashboard() {
       </section>
 
       {/* 3. CORE TWO-COLUMN INTERACTION SYSTEM */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-12">
         {/* LEFT COLUMN: UPCOMING SESSIONS */}
         <div className="lg:col-span-7 space-y-6">
           <div className="flex justify-between items-center border-b-4 border-black dark:border-white pb-3">
@@ -80,7 +99,7 @@ export default function Dashboard() {
             <h3 className="text-sm font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 inline-block rounded-md">📅 Calendar</h3>
           </div>
 
-          {/* Simply render the component directly */}
+          {/* Render the Calendar Component directly */}
           <Calendar />
         </div>
       </section>

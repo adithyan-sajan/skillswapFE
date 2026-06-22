@@ -11,16 +11,20 @@ const SHARED_CARD_STYLE = "border-4 border-black dark:border-white bg-white dark
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } },
 };
 
 const getLevelBadgeStyle = (level) => {
   const baseStyle = "text-[10px] font-black px-2 py-0.5 rounded-md border-2 border-black dark:border-white uppercase";
   switch (level?.toLowerCase()) {
-    case "beginner": return `${baseStyle} bg-emerald-400 dark:bg-emerald-500 text-black`;
-    case "intermediate": return `${baseStyle} bg-yellow-400 dark:bg-yellow-500 text-black`;
-    case "advanced": return `${baseStyle} bg-rose-400 dark:bg-rose-500 text-black`;
-    default: return `${baseStyle} bg-slate-100 dark:bg-neutral-800 text-black dark:text-white`;
+    case "beginner":
+      return `${baseStyle} bg-emerald-400 dark:bg-emerald-500 text-black`;
+    case "intermediate":
+      return `${baseStyle} bg-yellow-400 dark:bg-yellow-500 text-black`;
+    case "advanced":
+      return `${baseStyle} bg-rose-400 dark:bg-rose-500 text-black`;
+    default:
+      return `${baseStyle} bg-slate-100 dark:bg-neutral-800 text-black dark:text-white`;
   }
 };
 
@@ -40,18 +44,12 @@ export default function ExploreCard({ user, skill, icon: IconComponent, cost, de
                 <span className="text-xs font-black uppercase tracking-tight text-indigo-600 dark:text-orange-400 hover:underline cursor-pointer">@{user}</span>
               </div>
             </div>
-            <span className={getLevelBadgeStyle(level)}>
-              {level}
-            </span>
+            <span className={getLevelBadgeStyle(level)}>{level}</span>
           </div>
 
           <div className="space-y-1.5">
-            <h3 className="text-sm font-black uppercase tracking-tight leading-snug text-slate-900 dark:text-white">
-              {skill}
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-neutral-400 font-bold leading-relaxed line-clamp-3">
-              {desc}
-            </p>
+            <h3 className="text-sm font-black uppercase tracking-tight leading-snug text-slate-900 dark:text-white">{skill}</h3>
+            <p className="text-xs text-slate-600 dark:text-neutral-400 font-bold leading-relaxed line-clamp-3">{desc}</p>
           </div>
         </div>
 
@@ -64,10 +62,7 @@ export default function ExploreCard({ user, skill, icon: IconComponent, cost, de
           </div>
 
           {/* NEW: Attached onClick handler */}
-          <button 
-            onClick={onSwapClick}
-            className="h-9 px-3.5 bg-black text-white dark:bg-white dark:text-black text-xs font-black uppercase tracking-tight rounded-xl border-2 border-black dark:border-white hover:opacity-90 transition-all flex items-center gap-1.5 active:scale-95 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]"
-          >
+          <button onClick={onSwapClick} className="h-9 px-3.5 bg-black text-white dark:bg-white dark:text-black text-xs font-black uppercase tracking-tight rounded-xl border-2 border-black dark:border-white hover:opacity-90 transition-all flex items-center gap-1.5 active:scale-95 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
             Request Swap <ArrowRightIcon />
           </button>
         </div>
