@@ -4,6 +4,7 @@ import { useTheme } from "../context/ThemeContext";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import AppFooter from "../components/AppFooter";
+import Grainient from "../component/Grainient";
 
 export default function SidebarLayout() {
   const { isDark, toggleTheme } = useTheme();
@@ -12,7 +13,6 @@ export default function SidebarLayout() {
   const profileRef = useRef(null);
   
   const location = useLocation();
-  // Check if the current route is the Live Classroom
   const isSessionRoom = location.pathname.includes("/dashboard/session/");
 
   useEffect(() => {
@@ -34,10 +34,40 @@ export default function SidebarLayout() {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-white dark:bg-[#111] overflow-hidden font-mono antialiased text-black dark:text-white transition-colors duration-150">
+    <div className="relative flex h-screen w-screen bg-slate-100 dark:bg-[#0a0a0a] overflow-hidden font-mono antialiased text-black dark:text-white transition-colors duration-150">
       
+      {/* ==============================================
+          FIXED GLOBAL BACKGROUND LAYER
+          Using the bold "blob" settings with low blendSoftness
+      ============================================== */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Grainient
+          // Light Mode: App Indigo + Neon Pink + Electric Cyan
+          // Dark Mode: Deep Purple + App Orange + Almost Black
+          color1={isDark ? "#3b0764" : "#4f46e5"} 
+          color2={isDark ? "#f97316" : "#FF9FFC"}
+          color3={isDark ? "#0a0a0a" : "#00E5FF"} 
+          
+          timeSpeed={0.25} 
+          warpStrength={1.5} 
+          warpFrequency={5}
+          warpSpeed={2}
+          warpAmplitude={50}
+          
+          // 0.05 keeps the shapes distinct like a lava lamp instead of washing out
+          blendSoftness={0.05} 
+          
+          grainAmount={0.08}
+          grainScale={2}
+          grainAnimated={true}
+          contrast={1.5}
+          saturation={1}
+          zoom={1}
+        />
+      </div>
+
       {/* SIDEBAR COLUMN */}
-      <aside onMouseEnter={() => setIsCollapsed(false)} onMouseLeave={() => setIsCollapsed(true)} className={`${isCollapsed ? "w-20" : "w-64"} h-full hidden md:flex flex-col bg-white dark:bg-[#111] flex-shrink-0 border-r-4 border-black dark:border-white select-none transition-all duration-200 ease-in-out z-20`}>
+      <aside onMouseEnter={() => setIsCollapsed(false)} onMouseLeave={() => setIsCollapsed(true)} className={`${isCollapsed ? "w-20" : "w-64"} h-full hidden md:flex flex-col bg-white dark:bg-[#111] flex-shrink-0 border-r-4 border-black dark:border-white select-none transition-all duration-200 ease-in-out relative z-20`}>
         <div className="h-20 border-b-4 border-black dark:border-white flex-shrink-0" />
         <nav className="flex-1 px-3 py-6 space-y-2.5">
           <Link to="/dashboard/deck" className={getLinkStyles("/dashboard/deck")} title="Dashboard">
@@ -64,10 +94,10 @@ export default function SidebarLayout() {
       </aside>
 
       {/* MAIN APPLICATION VIEWPORT */}
-      <div className="flex flex-col flex-1 h-full overflow-hidden">
+      <div className="flex flex-col flex-1 h-full overflow-hidden relative z-10">
         
         {/* HEADER */}
-        <header className="h-20 bg-white dark:bg-[#111] border-b-4 border-black dark:border-white flex items-center justify-between px-6 md:px-8 flex-shrink-0 select-none z-10">
+        <header className="h-20 bg-white dark:bg-[#111] border-b-4 border-black dark:border-white flex items-center justify-between px-6 md:px-8 flex-shrink-0 select-none relative z-20">
           <div className="flex items-center gap-3">
             <div className="h-5 w-5 bg-indigo-600 dark:bg-orange-400 rounded-md border-2 border-black dark:border-white" />
             <h2 className="text-xl font-black tracking-tighter uppercase whitespace-nowrap">Skill Swap</h2>
@@ -111,14 +141,19 @@ export default function SidebarLayout() {
         </header>
 
         {/* WORKSPACE AREA CONTAINER */}
-        {/* If it is a session room, strip the padding. Otherwise, use normal padding. */}
-        <main className={`flex-1 overflow-y-auto bg-slate-50/60 dark:bg-[#161616] transition-colors flex flex-col justify-between ${isSessionRoom ? 'p-0 overflow-hidden' : 'p-6 md:p-8'}`}>
-          <div className={`w-full ${isSessionRoom ? 'h-full' : ''}`}>
+        <main className={`flex-1 overflow-y-auto bg-transparent transition-colors flex flex-col justify-between relative z-10 ${isSessionRoom ? 'overflow-hidden' : ''}`}>
+          
+          {/* Content Area (Padding applied here instead of main) */}
+          <div className={`w-full relative z-10 ${isSessionRoom ? 'h-full p-0' : 'p-6 md:p-8'}`}>
             <Outlet />
           </div>
           
-          {/* Conditionally render the footer so it disappears in the classroom! */}
-          {!isSessionRoom && <AppFooter />}
+          {/* Footer naturally sits at the bottom, SOLID BACKGROUND overrides Grainient */}
+          {!isSessionRoom && (
+            <div className="relative z-20 mt-auto bg-white dark:bg-[#111] border-t-4 border-black dark:border-white">
+              <AppFooter />
+            </div>
+          )}
         </main>
 
       </div>
