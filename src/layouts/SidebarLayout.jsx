@@ -38,30 +38,31 @@ export default function SidebarLayout() {
       
       {/* ==============================================
           FIXED GLOBAL BACKGROUND LAYER
-          Using the bold "blob" settings with low blendSoftness
+          "Slow Lava Lamp" Physics
       ============================================== */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Grainient
-          // Light Mode: App Indigo + Neon Pink + Electric Cyan
-          // Dark Mode: Deep Purple + App Orange + Almost Black
-          color1={isDark ? "#3b0764" : "#4f46e5"} 
-          color2={isDark ? "#f97316" : "#FF9FFC"}
-          color3={isDark ? "#0a0a0a" : "#00E5FF"} 
+          // Light Mode: Visible pastels (Soft Indigo, Peach, Sky Blue)
+          // Dark Mode: Deep Violet, Burnt Orange, Dark Cyan
+          color1={isDark ? "#2e1065" : "#c7d2fe"} 
+          color2={isDark ? "#9a3412" : "#fed7aa"}
+          color3={isDark ? "#082f49" : "#bae6fd"} 
           
-          timeSpeed={0.25} 
-          warpStrength={1.5} 
-          warpFrequency={5}
-          warpSpeed={2}
-          warpAmplitude={50}
+          // SMOOTH, WIDE MOTION
+          timeSpeed={0.15}       // Slowed down the color evolution
+          warpStrength={2.0}     // Keeps the distortion strong
+          warpFrequency={2}      // LOWER = Large sweeping waves instead of small jitters/shakes
+          warpSpeed={1.0}        // LOWER = Smooth swaying motion
+          warpAmplitude={150}    // HIGHER = Colors travel much further across the screen
+          rotationAmount={360}   
           
-          // 0.05 keeps the shapes distinct like a lava lamp instead of washing out
-          blendSoftness={0.05} 
+          blendSoftness={0.05}   // Keeps the shapes distinct
           
-          grainAmount={0.08}
+          grainAmount={0.06}
           grainScale={2}
           grainAnimated={true}
-          contrast={1.5}
-          saturation={1}
+          contrast={1.2}       
+          saturation={isDark ? 0.85 : 1} // Bumped light mode saturation back up so it's visible
           zoom={1}
         />
       </div>
@@ -143,12 +144,10 @@ export default function SidebarLayout() {
         {/* WORKSPACE AREA CONTAINER */}
         <main className={`flex-1 overflow-y-auto bg-transparent transition-colors flex flex-col justify-between relative z-10 ${isSessionRoom ? 'overflow-hidden' : ''}`}>
           
-          {/* Content Area (Padding applied here instead of main) */}
           <div className={`w-full relative z-10 ${isSessionRoom ? 'h-full p-0' : 'p-6 md:p-8'}`}>
             <Outlet />
           </div>
           
-          {/* Footer naturally sits at the bottom, SOLID BACKGROUND overrides Grainient */}
           {!isSessionRoom && (
             <div className="relative z-20 mt-auto bg-white dark:bg-[#111] border-t-4 border-black dark:border-white">
               <AppFooter />
