@@ -18,7 +18,7 @@ const FIAT_MINTS = [
 ];
 
 export default function AdminEscrow() {
-  const [activeTab, setActiveTab] = useState("escrow"); // 'escrow' or 'fiat'
+  const [activeTab, setActiveTab] = useState("escrow"); 
 
   return (
     <main className="max-w-screen-2xl mx-auto w-full p-6 md:p-8 space-y-8 flex-grow flex flex-col">

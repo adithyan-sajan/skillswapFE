@@ -83,7 +83,7 @@ export default function Profile() {
             />
           </div>
 
-          {/* DETAIL & INTEGRATED METRICS PANEL - Right side (Expanded to 9 spans) */}
+          {/* DETAIL & INTEGRATED METRICS PANEL*/}
           <div className="lg:col-span-9 flex flex-col justify-between space-y-6">
             
             {/* Upper Content Area */}
@@ -134,7 +134,7 @@ export default function Profile() {
               </p>
             </div>
 
-            {/* INTEGRATED 4-TRACKER PANEL (Beefed up with extra padding and slightly bigger text layouts) */}
+            {/* INTEGRATED 4-TRACKER PANEL*/}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               {[
                 { icon: HiUserGroup, label: "Swaps Completed", val: `${profileData.stats.totalSwaps} times` },

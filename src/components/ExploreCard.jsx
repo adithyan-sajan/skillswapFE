@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { useTheme } from "../context/ThemeContext"; 
+import { useTheme } from "../context/ThemeContext";
 
 const ArrowRightIcon = () => (
   <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current" strokeWidth="2.5">
@@ -42,30 +42,16 @@ export default function ExploreCard({ user, skill, icon: IconComponent, cost, de
   };
 
   // The high-contrast neon tracking glow
-  const glowGradient = isDark
-    ? `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 60, 0, 1) 0%, rgba(255, 0, 255, 0.8) 50%, transparent 100%)`
-    : `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 255, 150, 1) 0%, rgba(0, 100, 255, 0.8) 50%, transparent 100%)`;
+  const glowGradient = isDark ? `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 60, 0, 1) 0%, rgba(255, 0, 255, 0.8) 50%, transparent 100%)` : `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 255, 150, 1) 0%, rgba(0, 100, 255, 0.8) 50%, transparent 100%)`;
 
   return (
     <motion.div variants={itemVariants} className="h-full">
-      {/* FIXED WRAPPER: 
-        Keeps a constant 6px shadow. When hover:-translate-y-2 fires, 
-        the shadow moves perfectly in sync with the card, lifting off the page!
-      */}
-      <div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        className="relative h-full rounded-xl shadow-[6px_6px_0px_0px_#4f46e5] dark:shadow-[6px_6px_0px_0px_#f97316] hover:-translate-y-2 hover:-translate-x-2 transition-transform duration-200 group cursor-default"
-      >
+      <div ref={cardRef} onMouseMove={handleMouseMove} className="relative h-full rounded-xl shadow-[6px_6px_0px_0px_#4f46e5] dark:shadow-[6px_6px_0px_0px_#f97316] hover:-translate-y-2 hover:-translate-x-2 transition-transform duration-200 group cursor-default">
         {/* MAGIC GLOW LAYER */}
-        <div
-          className="absolute -inset-1.5 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg rounded-2xl"
-          style={{ background: glowGradient }}
-        />
+        <div className="absolute -inset-1.5 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg rounded-2xl" style={{ background: glowGradient }} />
 
         {/* ACTUAL CARD SURFACE */}
         <div className="p-5 h-full flex flex-col justify-between relative bg-white dark:bg-[#111] border-4 border-black dark:border-white rounded-xl z-10 overflow-hidden">
-          
           <div>
             <div className="flex justify-between items-start border-b-2 border-black/10 dark:border-white/20 pb-3 mb-3.5">
               <div className="flex items-center gap-2">
@@ -99,7 +85,6 @@ export default function ExploreCard({ user, skill, icon: IconComponent, cost, de
             </button>
           </div>
         </div>
-
       </div>
     </motion.div>
   );

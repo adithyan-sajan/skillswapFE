@@ -38,7 +38,6 @@ export default function SidebarLayout() {
       
       {/* ==============================================
           FIXED GLOBAL BACKGROUND LAYER
-          "Slow Lava Lamp" Physics
       ============================================== */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Grainient
@@ -49,8 +48,8 @@ export default function SidebarLayout() {
           color3={isDark ? "#082f49" : "#bae6fd"} 
           
           // SMOOTH, WIDE MOTION
-          timeSpeed={0.15}       // Slowed down the color evolution
-          warpStrength={2.0}     // Keeps the distortion strong
+          timeSpeed={0.15}       
+          warpStrength={2.0}     
           warpFrequency={2}      // LOWER = Large sweeping waves instead of small jitters/shakes
           warpSpeed={1.0}        // LOWER = Smooth swaying motion
           warpAmplitude={150}    // HIGHER = Colors travel much further across the screen
@@ -62,7 +61,7 @@ export default function SidebarLayout() {
           grainScale={2}
           grainAnimated={true}
           contrast={1.2}       
-          saturation={isDark ? 0.85 : 1} // Bumped light mode saturation back up so it's visible
+          saturation={isDark ? 0.85 : 1} 
           zoom={1}
         />
       </div>

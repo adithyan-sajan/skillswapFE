@@ -15,7 +15,6 @@ export default function SessionCard({ id, peer, role, topic, startTime, duration
       const start = new Date(startTime).getTime();
       const diff = start - now;
 
-      // 5 minutes in milliseconds = 300,000
       if (diff <= 300000 && diff > -3600000) { 
         setIsJoinable(true);
         setTimeStatus(diff <= 0 ? "LIVE NOW" : "STARTING SOON");

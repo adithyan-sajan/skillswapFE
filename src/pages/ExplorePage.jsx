@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import ExploreCard from "../components/ExploreCard";
 import SkillDetailModal from "../components/SkillDetailModal";
 
-// 1. UPDATED ICONS: Added default classes so they work in cards, but can be overridden in buttons
 const AllIcon = ({ className = "text-indigo-600 dark:text-orange-400 w-5 h-5" }) => (
   <svg viewBox="0 0 24 24" className={`stroke-current ${className}`} fill="none" strokeWidth="2">
     <rect x="3" y="3" width="7" height="7" rx="1.5" />
