@@ -27,3 +27,12 @@ export const updateSwapRequest = (requestId, status) => userApi.patch(`/requests
 // ==========================================
 export const getAllUsers = () => adminApi.get("/admin/users");
 export const deleteUser = (id) => adminApi.delete(`/admin/users/${id}`);
+
+export const getMyConversations = () => userApi.get("/chat/conversations");
+export const getChatMessages = (conversationId) => userApi.get(`/chat/${conversationId}`);
+
+// ==========================================
+// SESSIONS & SCHEDULING
+// ==========================================
+export const createSession = (reqBody) => userApi.post("/sessions", reqBody);
+export const getMySessions = () => userApi.get("/sessions/me");
