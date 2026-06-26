@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { HiChartPie, HiSearch, HiUser, HiChat, HiSun, HiMoon, HiCreditCard } from "react-icons/hi";
 import { useTheme } from "../context/ThemeContext";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import AppFooter from "../components/AppFooter";
 import Grainient from "../component/Grainient";
+import { useAuth } from "../context/AuthContext"; // 1. Import Auth Context
 
 export default function SidebarLayout() {
   const { isDark, toggleTheme } = useTheme();
+  const { user, logout } = useAuth(); // 2. Pull user and logout function
+  const navigate = useNavigate();
+  
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef(null);
@@ -25,6 +29,11 @@ export default function SidebarLayout() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login"); // 3. Redirect to login after clearing session
+  };
+
   const getLinkStyles = (path) => {
     const isActive = location.pathname === path;
     const baseStyles = "flex items-center gap-3.5 px-4 py-3.5 font-bold uppercase text-sm rounded-xl border-2 transition-all duration-200 group";
@@ -33,30 +42,28 @@ export default function SidebarLayout() {
     return `${baseStyles} ${alignmentStyles} ${stateStyles}`;
   };
 
+  // Safe fallback values if user data is still loading
+  const displayAvatar = user?.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&h=300&q=80";
+  const displayUsername = user?.username || "Guest";
+  const displayEmail = user?.email || "Connecting...";
+  const displayBalance = user?.walletBalance !== undefined ? user.walletBalance.toFixed(2) : "0.00";
+
   return (
     <div className="relative flex h-screen w-screen bg-slate-100 dark:bg-[#0a0a0a] overflow-hidden font-mono antialiased text-black dark:text-white transition-colors duration-150">
       
-      {/* ==============================================
-          FIXED GLOBAL BACKGROUND LAYER
-      ============================================== */}
+      {/* FIXED GLOBAL BACKGROUND LAYER */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Grainient
-          // Light Mode: Visible pastels (Soft Indigo, Peach, Sky Blue)
-          // Dark Mode: Deep Violet, Burnt Orange, Dark Cyan
           color1={isDark ? "#2e1065" : "#c7d2fe"} 
           color2={isDark ? "#9a3412" : "#fed7aa"}
           color3={isDark ? "#082f49" : "#bae6fd"} 
-          
-          // SMOOTH, WIDE MOTION
           timeSpeed={0.15}       
           warpStrength={2.0}     
-          warpFrequency={2}      // LOWER = Large sweeping waves instead of small jitters/shakes
-          warpSpeed={1.0}        // LOWER = Smooth swaying motion
-          warpAmplitude={150}    // HIGHER = Colors travel much further across the screen
+          warpFrequency={2}      
+          warpSpeed={1.0}        
+          warpAmplitude={150}    
           rotationAmount={360}   
-          
-          blendSoftness={0.05}   // Keeps the shapes distinct
-          
+          blendSoftness={0.05}   
           grainAmount={0.06}
           grainScale={2}
           grainAnimated={true}
@@ -104,9 +111,10 @@ export default function SidebarLayout() {
           </div>
 
           <div className="flex items-center gap-4 ml-auto">
+            {/* DYNAMIC WALLET BALANCE */}
             <Link to="/dashboard/wallet" className="bg-slate-50 dark:bg-neutral-900 text-black dark:text-white border-2 border-black dark:border-white rounded-xl text-xs font-bold px-3 py-2 flex items-center gap-2 uppercase transition-all hover:bg-slate-100 dark:hover:bg-neutral-800 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none">
               <span className="text-sm">🪙</span>
-              <span>Bal: 5.00 SKL</span>
+              <span>Bal: {displayBalance} SKL</span>
             </Link>
 
             <button onClick={toggleTheme} className="p-2 border-2 border-black dark:border-white bg-white dark:bg-[#111] text-black dark:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-neutral-900 transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none">
@@ -116,22 +124,25 @@ export default function SidebarLayout() {
             {/* PROFILE DROPDOWN */}
             <div className="relative" ref={profileRef}>
               <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="block border-2 border-black dark:border-white rounded-xl overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all focus:outline-none">
-                <img src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="User Avatar" className="w-12 h-12 object-cover block" />
+                {/* DYNAMIC AVATAR */}
+                <img src={displayAvatar} alt="User Avatar" className="w-12 h-12 object-cover block bg-slate-200 dark:bg-neutral-800" />
               </button>
 
               <AnimatePresence>
                 {isProfileOpen && (
                   <motion.div initial={{ opacity: 0, y: -10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -10, scale: 0.95 }} transition={{ type: "spring", stiffness: 300, damping: 25 }} className="absolute right-0 top-16 w-56 bg-white dark:bg-[#111] border-4 border-black dark:border-white rounded-xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] flex flex-col z-50 overflow-hidden">
                     <div className="px-4 py-3 border-b-2 border-black dark:border-white bg-slate-50 dark:bg-neutral-900">
-                      <span className="block text-sm font-black text-black dark:text-white uppercase">User_Ice</span>
-                      <span className="block truncate text-xs text-black/60 dark:text-white/60 font-bold mt-1">ice@skillswap.org</span>
+                      {/* DYNAMIC USERNAME & EMAIL */}
+                      <span className="block text-sm font-black text-black dark:text-white uppercase">{displayUsername}</span>
+                      <span className="block truncate text-xs text-black/60 dark:text-white/60 font-bold mt-1">{displayEmail}</span>
                     </div>
                     <div className="p-2 space-y-1">
                       <Link to="/dashboard/profile" onClick={() => setIsProfileOpen(false)} className="block w-full text-left px-3 py-2 text-xs font-black uppercase rounded-lg hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">Profile Settings</Link>
                       <button className="w-full text-left px-3 py-2 text-xs font-black uppercase rounded-lg hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">Network Config</button>
                     </div>
                     <div className="p-2 border-t-2 border-black dark:border-white">
-                      <button className="w-full text-left px-3 py-2 text-xs font-black uppercase text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-500 dark:hover:text-black rounded-lg transition-colors">Log Out</button>
+                      {/* WIRED UP LOGOUT BUTTON */}
+                      <button onClick={handleLogout} className="w-full text-left px-3 py-2 text-xs font-black uppercase text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-500 dark:hover:text-black rounded-lg transition-colors">Log Out</button>
                     </div>
                   </motion.div>
                 )}
@@ -142,7 +153,6 @@ export default function SidebarLayout() {
 
         {/* WORKSPACE AREA CONTAINER */}
         <main className={`flex-1 overflow-y-auto bg-transparent transition-colors flex flex-col justify-between relative z-10 ${isSessionRoom ? 'overflow-hidden' : ''}`}>
-          
           <div className={`w-full relative z-10 ${isSessionRoom ? 'h-full p-0' : 'p-6 md:p-8'}`}>
             <Outlet />
           </div>
@@ -153,7 +163,6 @@ export default function SidebarLayout() {
             </div>
           )}
         </main>
-
       </div>
     </div>
   );

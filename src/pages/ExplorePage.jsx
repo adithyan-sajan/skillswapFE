@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { HiSearch } from "react-icons/hi";
 import { motion } from "framer-motion";
 import ExploreCard from "../components/ExploreCard";
 import SkillDetailModal from "../components/SkillDetailModal";
+
+// 1. IMPORT YOUR AXIOS API SERVICE
+import { getAllListings } from "../services/AllApi";
 
 const AllIcon = ({ className = "text-indigo-600 dark:text-orange-400 w-5 h-5" }) => (
   <svg viewBox="0 0 24 24" className={`stroke-current ${className}`} fill="none" strokeWidth="2">
@@ -23,11 +26,7 @@ const TechIcon = ({ className = "text-indigo-600 dark:text-orange-400 w-5 h-5" }
   </svg>
 );
 const CreativeIcon = ({ className = "text-indigo-600 dark:text-orange-400 w-5 h-5" }) => (
-  <svg 
-    viewBox="0 0 297 297" 
-    className={`fill-current ${className}`} 
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg viewBox="0 0 297 297" className={`fill-current ${className}`} xmlns="http://www.w3.org/2000/svg">
     <path d="M254.141,53.244C224.508,18.909,185.299,0,143.736,0c-35.062,0-68.197,13.458-93.302,37.9 C10.383,76.892-2.822,123.282,14.207,165.178c13.868,34.122,45.625,57.954,77.227,57.954c0.841,0,1.671-0.016,2.508-0.053 c4.705-0.194,9.249-0.586,13.646-0.966c5.309-0.462,10.325-0.895,14.77-0.895c10.54,0,19.645,0,19.645,26.846 c0,28.811,17.538,48.934,42.65,48.936c0.002,0,0.002,0,0.004,0c17.864,0,37.651-10.342,57.215-29.903 c25.882-25.88,43.099-62.198,47.234-99.64C293.762,125.326,281.343,84.763,254.141,53.244z M227.315,252.54 c-15.397,15.398-30.55,23.877-42.66,23.875c-16.288,0-22.064-15.274-22.064-28.352c0-32.357-12.786-47.43-40.232-47.43 c-5.333,0-10.778,0.472-16.545,0.969c-4.169,0.359-8.481,0.733-12.724,0.909c-0.553,0.024-1.102,0.034-1.655,0.034 c-23.07,0-47.529-18.975-58.156-45.118c-13.714-33.738-2.225-71.927,31.519-104.779c21.239-20.676,49.272-32.063,78.939-32.063 c35.485,0,69.159,16.373,94.82,46.107C289.187,125.359,272.6,207.256,227.315,252.54z"/>
     <path d="M192.654,165.877c0,17.213,13.918,31.217,31.026,31.217c17.107,0,31.025-14.004,31.025-31.217 c0-17.215-13.918-31.219-31.025-31.219C206.572,134.658,192.654,148.662,192.654,165.877z M234.118,165.877 c0,5.861-4.682,10.633-10.438,10.633c-5.756,0-10.438-4.771-10.438-10.633c0-5.863,4.683-10.633,10.438-10.633 C229.436,155.244,234.118,160.014,234.118,165.877z"/>
     <path d="M226.914,93.489c0-17.215-13.917-31.219-31.025-31.219c-17.107,0-31.025,14.004-31.025,31.219 c0,17.211,13.918,31.218,31.025,31.218C212.997,124.707,226.914,110.7,226.914,93.489z M185.45,93.489 c0-5.865,4.684-10.632,10.439-10.632c5.756,0,10.438,4.767,10.438,10.632c0,5.86-4.683,10.633-10.438,10.633 C190.133,104.122,185.45,99.35,185.45,93.489z"/>
@@ -47,7 +46,6 @@ const MiscIcon = ({ className = "text-indigo-600 dark:text-orange-400 w-5 h-5" }
   </svg>
 );
 
-// 2. EXTRACTED CATEGORY ARRAY
 const CATEGORIES = [
   { id: "all", label: "All", icon: AllIcon },
   { id: "languages", label: "Languages", icon: LanguageIcon },
@@ -57,22 +55,22 @@ const CATEGORIES = [
   { id: "misc", label: "Misc", icon: MiscIcon },
 ];
 
-const MOCK_SKILLS = [
-  { id: 1, user: "Alex_Baker", skill: "Conversational Japanese", cat: "languages", icon: LanguageIcon, cost: 1.5, desc: "Practice fluid conversational structures, casual slangs, and basic pitch accent correction.", level: "Intermediate", dateAdded: "2026-06-01" },
-  { id: 2, user: "Matrix_Rebel", skill: "React Architecture & Custom Hooks", cat: "tech", icon: TechIcon, cost: 2.0, desc: "Learn how to cleanly abstract global data layer patterns using state orchestration frameworks.", level: "Advanced", dateAdded: "2026-06-09" },
-  { id: 3, user: "Pixel_Lord", skill: "Figma Component Systems", cat: "creative", icon: CreativeIcon, cost: 1.0, desc: "Master auto-layout engines, semantic design tokens, and scalable interactive variants.", level: "Beginner", dateAdded: "2026-05-20" },
-  { id: 4, user: "Growth_Hacker", skill: "Direct Response Copywriting", cat: "business", icon: BusinessIcon, cost: 1.8, desc: "Deconstruct psychological patterns that turn raw reader attention into targeted landing page conversions.", level: "Intermediate", dateAdded: "2026-06-05" },
-  { id: 5, user: "Sora_99", skill: "Introduction to Rust Lang", cat: "tech", icon: TechIcon, cost: 2.5, desc: "Unpack memory safety rules without a garbage collector. Demystifying borrow-check syntax.", level: "Beginner", dateAdded: "2026-06-10" },
-  { id: 6, user: "Lingo_Guru", skill: "Advanced Spanish Subjunctive", cat: "languages", icon: LanguageIcon, cost: 1.2, desc: "Break past plateaus by mastering complex conditional moods, triggers, and idiomatic speech templates.", level: "Advanced", dateAdded: "2026-05-15" },
-  { id: 7, user: "Tone_Craft", skill: "Guitar Setup & Intonation", cat: "misc", icon: MiscIcon, cost: 1.0, desc: "Adjust truss rods, set saddle heights, cut nut slots, and fix scale lengths to stop fret buzz.", level: "Advanced", dateAdded: "2026-06-08" },
-];
-
 const containerVariants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
+// HELPER: Matches the backend 'category' string to your custom icons
+const getIconForCategory = (categoryStr) => {
+  const cat = CATEGORIES.find(c => c.id === categoryStr);
+  return cat ? cat.icon : MiscIcon;
+};
+
 export default function ExplorePage() {
+  const [listings, setListings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
@@ -80,21 +78,52 @@ export default function ExplorePage() {
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // 2. FETCH LIVE DATA USING AXIOS ON MOUNT
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await getAllListings();
+        setListings(response.data); // Axios sets JSON payload inside .data
+      } catch (err) {
+        console.error("Listing fetch error:", err);
+        setError(err.response?.data?.message || err.message || "Failed to fetch marketplace data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
   const handleOpenModal = (skill) => {
-    setSelectedSkill(skill);
+    // Map the database object to the format your modal probably expects
+    const formattedSkill = {
+      ...skill,
+      user: skill.hostId?.username || "Unknown Host",
+      skill: skill.title,
+      desc: skill.description,
+      cost: skill.costPerHour
+    };
+    setSelectedSkill(formattedSkill);
     setIsModalOpen(true);
   };
 
-  const filteredSkills = MOCK_SKILLS.filter((item) => {
-    const matchesSearch = item.skill.toLowerCase().includes(searchQuery.toLowerCase()) || item.desc.toLowerCase().includes(searchQuery.toLowerCase()) || item.user.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || item.cat === selectedCategory;
+  // 3. FILTER & SORT LIVE DATA
+  const filteredSkills = listings.filter((item) => {
+    const titleMatch = item.title?.toLowerCase().includes(searchQuery.toLowerCase());
+    const descMatch = item.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    const hostMatch = item.hostId?.username?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesSearch = titleMatch || descMatch || hostMatch;
+    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+    
     return matchesSearch && matchesCategory;
   });
 
   const sortedSkills = [...filteredSkills].sort((a, b) => {
-    if (sortBy === "newest") return new Date(b.dateAdded) - new Date(a.dateAdded);
-    if (sortBy === "price-low") return a.cost - b.cost;
-    if (sortBy === "price-high") return b.cost - a.cost;
+    if (sortBy === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
+    if (sortBy === "price-low") return a.costPerHour - b.costPerHour;
+    if (sortBy === "price-high") return b.costPerHour - a.costPerHour;
     return 0;
   });
 
@@ -126,7 +155,7 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* 2. CATEGORY SELECTOR TABS (NOW WITH ICONS) */}
+      {/* 2. CATEGORY SELECTOR TABS */}
       <div className="flex flex-wrap gap-2 border-b-4 border-black dark:border-white pb-4">
         {CATEGORIES.map((cat) => {
           const IconComponent = cat.icon;
@@ -134,7 +163,6 @@ export default function ExplorePage() {
 
           return (
             <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`flex items-center gap-2 px-4 py-2 font-mono text-xs font-black uppercase rounded-xl border-2 transition-all duration-200 active:scale-95 ${isSelected ? "bg-black text-white dark:bg-white dark:text-black border-black dark:border-white shadow-[2px_2px_0px_0px_#4f46e5] dark:shadow-[2px_2px_0px_0px_#f97316]" : "bg-white dark:bg-[#111] text-black/60 dark:text-white/60 border-black dark:border-white hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]"}`}>
-              {/* Force the icon to turn white/black when the button is actively selected */}
               <IconComponent className={`w-4 h-4 ${isSelected ? "text-white dark:text-black" : "text-indigo-600 dark:text-orange-400"}`} />
               {cat.label}
             </button>
@@ -143,14 +171,31 @@ export default function ExplorePage() {
       </div>
 
       {/* 3. PEER CARDS RESPONSE MATRIX */}
-      {sortedSkills.length === 0 ? (
+      {isLoading ? (
+        <div className="border-4 border-dashed border-black dark:border-white rounded-xl p-12 text-center bg-white dark:bg-[#111] animate-pulse">
+          <p className="text-xs font-black uppercase tracking-wide text-indigo-600 dark:text-orange-400">⚡ Fetching Network Nodes... ⚡</p>
+        </div>
+      ) : error ? (
+        <div className="border-4 border-dashed border-rose-500 rounded-xl p-12 text-center bg-rose-500/10">
+          <p className="text-xs font-black uppercase tracking-wide text-rose-500">SYSTEM ERROR: {error}</p>
+        </div>
+      ) : sortedSkills.length === 0 ? (
         <div className="border-4 border-dashed border-black dark:border-white rounded-xl p-12 text-center bg-white dark:bg-[#111]">
           <p className="text-xs font-black uppercase tracking-wide text-black/40 dark:text-white/40">⚡ No available network nodes match your metrics ⚡</p>
         </div>
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedSkills.map((node) => (
-            <ExploreCard key={node.id} {...node} onSwapClick={() => handleOpenModal(node)} />
+            <ExploreCard 
+              key={node._id} 
+              user={node.hostId?.username || "Unknown Host"}
+              skill={node.title}
+              desc={node.description}
+              cost={node.costPerHour}
+              level={node.level}
+              icon={getIconForCategory(node.category)}
+              onSwapClick={() => handleOpenModal(node)} 
+            />
           ))}
         </motion.div>
       )}
