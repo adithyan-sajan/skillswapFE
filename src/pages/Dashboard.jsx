@@ -5,15 +5,16 @@ import Calendar from "../components/Calendar";
 import SessionCard from "../components/SessionCard";
 import CreateListingModal from "../components/CreateListingModal";
 
-// 1. IMPORT YOUR AUTH AND API SERVICES
 import { useAuth } from "../context/AuthContext";
-import { getMyListings, getMyRequests, updateSwapRequest } from "../services/AllApi";
+// 1. ADDED getMySessions TO YOUR IMPORTS
+import { getMyListings, getMyRequests, updateSwapRequest, getMySessions } from "../services/AllApi";
+import { io } from "socket.io-client";
 
 const SHARED_CARD_STYLE = "border-4 border-black dark:border-white bg-white dark:bg-[#111] rounded-xl shadow-[6px_6px_0px_0px_#4f46e5] dark:shadow-[6px_6px_0px_0px_#f97316]";
 
 export default function Dashboard() {
-  const { user } = useAuth(); // Need this to know if a request is Incoming or Outgoing
-  
+  const { user } = useAuth();
+
   // STATE: Active Nodes
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [myNodes, setMyNodes] = useState([]);
@@ -23,7 +24,10 @@ export default function Dashboard() {
   const [commRequests, setCommRequests] = useState([]);
   const [isLoadingRequests, setIsLoadingRequests] = useState(true);
 
-  // FETCH: Active Nodes
+  // 2. NEW STATE: Timetable (Sessions)
+  const [sessions, setSessions] = useState([]);
+  const [isLoadingSessions, setIsLoadingSessions] = useState(true);
+
   const fetchMyNodes = async () => {
     try {
       setIsLoadingNodes(true);
@@ -36,7 +40,6 @@ export default function Dashboard() {
     }
   };
 
-  // FETCH: Swap Requests
   const fetchRequests = async () => {
     try {
       setIsLoadingRequests(true);
@@ -49,11 +52,23 @@ export default function Dashboard() {
     }
   };
 
-  // ACTION: Accept or Reject Request
+  // 3. NEW FETCH: Get Confirmed Sessions
+  const fetchSessions = async () => {
+    try {
+      setIsLoadingSessions(true);
+      const response = await getMySessions();
+      setSessions(response.data);
+    } catch (error) {
+      console.error("Failed to fetch sessions:", error);
+    } finally {
+      setIsLoadingSessions(false);
+    }
+  };
+
   const handleRequestAction = async (requestId, status) => {
     try {
       await updateSwapRequest(requestId, status);
-      fetchRequests(); // Refresh the list immediately
+      fetchRequests();
     } catch (error) {
       alert(error.response?.data?.message || "Failed to update request.");
     }
@@ -62,26 +77,31 @@ export default function Dashboard() {
   useEffect(() => {
     fetchMyNodes();
     fetchRequests();
+    fetchSessions(); // Fetch sessions on load!
   }, []);
 
+  // Real-time Dashboard Updates
+  useEffect(() => {
+    if (!user) return;
+    const socket = io("http://localhost:5000", { withCredentials: true });
+    socket.emit("join_dashboard", user._id);
+    socket.on("dashboard_update", () => {
+      fetchRequests();
+      fetchMyNodes();
+      fetchSessions();
+    });
+    return () => socket.disconnect();
+  }, [user]);
+
+  // 4. DYNAMIC STATS (Updated Confirmed Events)
   const stats = [
     { label: "Hours Learned", value: "14 Hours", icon: HiAcademicCap, color: "text-indigo-600 dark:text-orange-400" },
     { label: "Hours Taught", value: "10 Hours", icon: HiTrendingUp, color: "text-emerald-500" },
-    { label: "Confirmed Events", value: "2 Sessions", icon: HiCalendar, color: "text-purple-500" },
-  ];
-
-  const now = new Date();
-  const liveTime = new Date(now.getTime() + 2 * 60000).toISOString();
-  const futureTime = new Date(now.getTime() + 24 * 60 * 60000).toISOString();
-
-  const upcomingSessions = [
-    { id: "room_789xyz", role: "Student", topic: "Advanced Auto-Layout in Figma", peer: "StudioMina", startTime: liveTime, duration: 60 },
-    { id: "room_456abc", role: "Teacher", topic: "Intro to Docker Containers", peer: "DevAlex", startTime: futureTime, duration: 30 },
+    { label: "Confirmed Events", value: `${sessions.length} Sessions`, icon: HiCalendar, color: "text-purple-500" },
   ];
 
   return (
     <div className="space-y-10 mb-5 max-w-[1400px] mx-auto">
-      {/* ATTACH THE MODAL */}
       <CreateListingModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onSuccess={fetchMyNodes} />
 
       {/* 1. HERO BANNER */}
@@ -121,8 +141,7 @@ export default function Dashboard() {
 
       {/* 3. CORE THREE-COLUMN INTERACTION SYSTEM */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start pb-12">
-        
-        {/* COLUMN 1: DYNAMIC COMM LINK (Swap Requests) */}
+        {/* COLUMN 1: DYNAMIC COMM LINK */}
         <div className="space-y-4">
           <div className="flex justify-between items-center border-b-4 border-black dark:border-white pb-3">
             <h3 className="text-sm font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 rounded-md flex items-center gap-2">
@@ -134,39 +153,34 @@ export default function Dashboard() {
             {isLoadingRequests ? (
               <div className="text-xs font-bold text-center py-4 uppercase animate-pulse">Scanning Frequencies...</div>
             ) : commRequests.length === 0 ? (
-              <div className="p-4 border-2 border-dashed border-black/20 dark:border-white/20 rounded-xl text-center text-[10px] font-bold uppercase">
-                Comm link is quiet.
-              </div>
+              <div className="p-4 border-2 border-dashed border-black/20 dark:border-white/20 rounded-xl text-center text-[10px] font-bold uppercase">Comm link is quiet.</div>
             ) : (
               commRequests.map((req) => {
-                // Determine if we sent this request or received it
-                const isIncoming = req.receiverId._id === user?._id; 
+                const isIncoming = req.receiverId._id === user?._id;
                 const peerName = isIncoming ? req.senderId.username : req.receiverId.username;
 
                 return (
                   <div key={req._id} className="p-4 border-4 border-black dark:border-white bg-slate-50 dark:bg-[#151515] rounded-xl flex flex-col gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                     <div className="text-sm font-bold flex flex-col gap-1.5 text-black/90 dark:text-white/90">
-                      <span className={`w-max px-2 py-0.5 rounded text-[10px] font-black uppercase border-2 border-black ${isIncoming ? "bg-indigo-600 text-white dark:bg-orange-400 dark:text-black" : "bg-neutral-800 text-white dark:bg-white dark:text-black"}`}>
-                        {isIncoming ? "Received Request" : "Sent Request"}
-                      </span>
+                      <span className={`w-max px-2 py-0.5 rounded text-[10px] font-black uppercase border-2 border-black ${isIncoming ? "bg-indigo-600 text-white dark:bg-orange-400 dark:text-black" : "bg-neutral-800 text-white dark:bg-white dark:text-black"}`}>{isIncoming ? "Received Request" : "Sent Request"}</span>
                       <span className="leading-tight">
                         <strong className="text-black dark:text-white font-black underline">@{peerName}</strong> requested <strong className="font-black text-indigo-700 dark:text-orange-400">{req.listingId?.title || "Skill"}</strong>
                       </span>
-                      {req.message && (
-                         <span className="text-[10px] bg-black/5 dark:bg-white/5 p-2 rounded italic mt-1">"{req.message}"</span>
-                      )}
+                      {req.message && <span className="text-[10px] bg-black/5 dark:bg-white/5 p-2 rounded italic mt-1">"{req.message}"</span>}
                     </div>
-                    
+
                     <div className="flex gap-2 w-full mt-2">
-                      {isIncoming && req.status === 'Pending' ? (
+                      {isIncoming && req.status === "Pending" ? (
                         <>
-                          <button onClick={() => handleRequestAction(req._id, 'Accepted')} className="flex-1 px-2 py-2 bg-emerald-500 text-white font-black text-[10px] uppercase rounded-lg border-2 border-black hover:translate-y-[2px] hover:shadow-none shadow-[2px_2px_0px_0px_#000] transition-all">Accept</button>
-                          <button onClick={() => handleRequestAction(req._id, 'Rejected')} className="flex-1 px-2 py-2 bg-rose-500 text-white font-black text-[10px] uppercase rounded-lg border-2 border-black hover:translate-y-[2px] hover:shadow-none shadow-[2px_2px_0px_0px_#000] transition-all">Reject</button>
+                          <button onClick={() => handleRequestAction(req._id, "Accepted")} className="flex-1 px-2 py-2 bg-emerald-500 text-white font-black text-[10px] uppercase rounded-lg border-2 border-black hover:translate-y-[2px] hover:shadow-none shadow-[2px_2px_0px_0px_#000] transition-all">
+                            Accept
+                          </button>
+                          <button onClick={() => handleRequestAction(req._id, "Rejected")} className="flex-1 px-2 py-2 bg-rose-500 text-white font-black text-[10px] uppercase rounded-lg border-2 border-black hover:translate-y-[2px] hover:shadow-none shadow-[2px_2px_0px_0px_#000] transition-all">
+                            Reject
+                          </button>
                         </>
                       ) : (
-                        <span className="text-[10px] font-black text-black dark:text-white uppercase bg-slate-200 dark:bg-neutral-800 px-3 py-2 rounded-lg border-2 border-black w-full text-center">
-                          Status: {req.status}
-                        </span>
+                        <span className="text-[10px] font-black text-black dark:text-white uppercase bg-slate-200 dark:bg-neutral-800 px-3 py-2 rounded-lg border-2 border-black w-full text-center">Status: {req.status}</span>
                       )}
                     </div>
                   </div>
@@ -176,30 +190,46 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* COLUMN 2: TIMETABLE */}
+        {/* 5. COLUMN 2: DYNAMIC TIMETABLE */}
         <div className="space-y-4">
           <div className="border-b-4 border-black dark:border-white pb-3 flex justify-between items-center">
             <h3 className="text-sm font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 rounded-md">⚡ Timetable</h3>
-            <span className="text-[10px] font-mono font-black text-white bg-red-500 border-2 border-black px-2 py-0.5 rounded-md">Total: {upcomingSessions.length}</span>
+            <span className="text-[10px] font-mono font-black text-white bg-emerald-500 border-2 border-black px-2 py-0.5 rounded-md">Total: {sessions.length}</span>
           </div>
 
           <div className="space-y-5">
-            {upcomingSessions.map((session) => (
-              <SessionCard key={session.id} {...session} />
-            ))}
+            {isLoadingSessions ? (
+              <div className="text-xs font-bold text-center py-4 uppercase animate-pulse">Syncing Calendar...</div>
+            ) : sessions.length === 0 ? (
+              <div className="text-[10px] font-bold text-center py-4 uppercase border-2 border-dashed border-black/20 dark:border-white/20 rounded-xl text-black/50 dark:text-white/50">No upcoming sessions.</div>
+            ) : (
+              sessions.map((session) => {
+                // Determine roles based on IDs
+                const isHost = session.hostId._id === user?._id;
+                const peerName = isHost ? session.learnerId.username : session.hostId.username;
+                const role = isHost ? "Teacher" : "Student";
+
+                return (
+                  <SessionCard
+                    key={session._id}
+                    session={session} // 🚨 PASS THE WHOLE OBJECT
+                    role={role} // 🚨 PASS THE ROLE
+                    peerName={peerName} // 🚨 PASS THE PEER NAME
+                    onUpdate={fetchSessions} // // The video room ID!
+                  />
+                );
+              })
+            )}
           </div>
         </div>
 
         {/* COLUMN 3: ACTIVE NODES & CALENDAR */}
         <div className="space-y-8">
-          {/* ACTIVE NODES */}
           <div className="space-y-4">
             <div className="flex justify-between items-center border-b-4 border-black dark:border-white pb-3">
               <h3 className="text-sm font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 rounded-md flex items-center gap-2">
                 <HiServer className="w-4 h-4" /> Active Nodes
               </h3>
-
-              {/* TRIGGER MODAL BUTTON */}
               <button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-1 text-[10px] font-black uppercase bg-indigo-600 dark:bg-orange-400 text-white dark:text-black px-2 py-1 rounded-md border-2 border-black hover:translate-y-[2px] hover:shadow-none shadow-[2px_2px_0px_0px_#000] transition-all">
                 <HiPlus className="w-3 h-3" /> New
               </button>
@@ -217,7 +247,6 @@ export default function Dashboard() {
                       <h4 className="text-[11px] font-black uppercase leading-tight line-clamp-1">{node.title}</h4>
                       <span className="text-[10px] font-bold text-black/50 dark:text-white/50 block mt-0.5">{node.costPerHour} SKL / hr</span>
                     </div>
-
                     <div className="flex items-center gap-3 flex-shrink-0">
                       <button className="text-[9px] font-black uppercase bg-slate-100 dark:bg-neutral-800 border-2 border-black dark:border-white px-2 py-1 rounded hover:bg-black hover:text-white transition-colors">View</button>
                       <div className={`w-3 h-3 rounded-full border-2 border-black ${node.isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-300"}`} title={`Status: ${node.isActive ? "Active" : "Inactive"}`} />
@@ -228,7 +257,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* CALENDAR */}
           <div className="space-y-4">
             <div className="border-b-4 border-black dark:border-white pb-3">
               <h3 className="text-sm font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 inline-block rounded-md">📅 Calendar</h3>

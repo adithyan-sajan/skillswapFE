@@ -36,3 +36,9 @@ export const getChatMessages = (conversationId) => userApi.get(`/chat/${conversa
 // ==========================================
 export const createSession = (reqBody) => userApi.post("/sessions", reqBody);
 export const getMySessions = () => userApi.get("/sessions/me");
+
+// ==========================================
+// ESCROW & PAYOUTS
+// ==========================================
+export const markComplete = (sessionId) => userApi.patch(`/escrow/${sessionId}/complete`);
+export const raiseDispute = (sessionId, reason) => userApi.patch(`/escrow/${sessionId}/dispute`, { reason });
