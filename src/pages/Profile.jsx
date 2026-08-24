@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { 
   HiStar, HiUserGroup, HiClock, HiCheckCircle, HiPlus, 
-  HiGlobeAlt, HiLocationMarker, HiAcademicCap,
+  HiGlobeAlt, HiLocationMarker,
   HiBadgeCheck, HiPencilAlt, HiOutlineGlobeAlt
 } from "react-icons/hi";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa"; 

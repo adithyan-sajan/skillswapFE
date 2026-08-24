@@ -1,4 +1,3 @@
-import React from "react";
 import { HiArrowUp, HiArrowDown, HiUsers, HiCurrencyDollar, HiScale, HiShieldCheck } from "react-icons/hi";
 
 const SHARED_CARD_STYLE = "border-4 border-black dark:border-white bg-white dark:bg-[#111] rounded-xl shadow-[6px_6px_0px_0px_#4f46e5] dark:shadow-[6px_6px_0px_0px_#f97316]";

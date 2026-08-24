@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiX, HiSparkles } from "react-icons/hi";
 import { Formik, Form, Field, ErrorMessage } from "formik";

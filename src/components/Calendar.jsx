@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { HiClock } from "react-icons/hi";
 
 // Shared container style with your single vibrant shadow color

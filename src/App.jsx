@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 // Import the guards we just made
 import { ProtectedRoute, AdminRoute, PublicRoute } from "./routes/ProtectedRoutes";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { HiSearch } from "react-icons/hi";
 import { motion } from "framer-motion";
 import ExploreCard from "../components/ExploreCard";

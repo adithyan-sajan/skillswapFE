@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 // 🚨 Added HiCalendar
-import { HiSearch, HiPaperAirplane, HiDotsVertical, HiOutlineVideoCamera, HiCalendar } from "react-icons/hi";
+import { HiSearch, HiPaperAirplane, HiOutlineVideoCamera, HiCalendar } from "react-icons/hi";
 import { useChat } from "../hooks/useChat"; 
 import { useAuth } from "../context/AuthContext";
 import { getMyConversations, getChatMessages } from "../services/AllApi"; 

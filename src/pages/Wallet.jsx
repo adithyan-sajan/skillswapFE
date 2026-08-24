@@ -1,4 +1,3 @@
-import React from "react";
 import { HiArrowCircleDown, HiSwitchHorizontal, HiLightningBolt, HiStar } from "react-icons/hi";
 
 const PRESS_ANIMATION = "active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-150";

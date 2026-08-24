@@ -1,4 +1,3 @@
-import React from "react";
 import { useTheme } from "../context/ThemeContext";
 import { HiArrowNarrowLeft, HiSun, HiMoon } from "react-icons/hi";
 import { Link } from "react-router-dom";
