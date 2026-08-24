@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import { useAuth } from "../context/AuthContext"; // To get your logged-in user
 
 // Connect to your hybrid backend server
-const SOCKET_SERVER_URL = "http://localhost:5000"; 
+const SOCKET_SERVER_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 export const useChat = (conversationId) => {
   const { user } = useAuth();

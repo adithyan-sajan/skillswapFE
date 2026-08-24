@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { userApi } from "../services/AxiosConfig";
 
 const AuthContext = createContext();
 
@@ -12,17 +13,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkLoggedIn = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/auth/refresh", {
-          method: "GET",
-          // CRITICAL: This line tells the browser, "Please include the locked httpOnly cookie!"
-          credentials: "include", 
-        });
+        const response = await userApi.get("/auth/refresh");
 
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-          setToken(data.accessToken); // Save the fresh short-lived token to RAM
-        }
+        const data = response.data;
+        setUser(data);
+        setToken(data.accessToken); // Save the fresh short-lived token to RAM
       } catch (error) {
         console.log("No valid session found. User needs to log in.",error);
       } finally {
@@ -36,31 +31,22 @@ export function AuthProvider({ children }) {
 
   // 2. THE LOGIN ACTION
   const login = async (email, password) => {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      credentials: "include", // Tells the browser to accept and store the new cookie
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Login failed");
+    try {
+      const response = await userApi.post("/auth/login", { email, password });
+      const data = response.data;
+      setUser(data);
+      setToken(data.accessToken);
+      return data;
+    } catch (error) {
+      // Axios throws on non-2xx — surface the server's message if it has one
+      throw new Error(error.response?.data?.message || "Login failed");
     }
-
-    const data = await response.json();
-    setUser(data);
-    setToken(data.accessToken);
-    return data;
   };
 
   // 3. THE LOGOUT ACTION
   const logout = async () => {
     try {
-      await fetch("http://localhost:5000/api/auth/logout", {
-        method: "POST",
-        credentials: "include", // Tells the server to destroy the cookie
-      });
+      await userApi.post("/auth/logout"); // withCredentials sends the cookie the server destroys
     } catch (err) {
       console.error("Logout error", err);
     } finally {

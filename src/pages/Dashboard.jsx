@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { HiCalendar, HiAcademicCap, HiTrendingUp, HiBadgeCheck, HiInbox, HiServer, HiPlus } from "react-icons/hi";
 
 import Calendar from "../components/Calendar";
@@ -83,7 +83,7 @@ export default function Dashboard() {
   // Real-time Dashboard Updates
   useEffect(() => {
     if (!user) return;
-    const socket = io("http://localhost:5000", { withCredentials: true });
+    const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:5000", { withCredentials: true });
     socket.emit("join_dashboard", user._id);
     socket.on("dashboard_update", () => {
       fetchRequests();

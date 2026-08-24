@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 // 🚨 1. IMPORT TLDRAW & ITS CSS
 import { Tldraw, useEditor } from "tldraw";
@@ -7,7 +7,7 @@ import { io } from "socket.io-client";
 
 import { HiMicrophone, HiOutlineMicrophone, HiVideoCamera, HiOutlineVideoCamera, HiDesktopComputer, HiChatAlt2, HiClock, HiPaperAirplane } from "react-icons/hi";
 
-const socket = io("http://localhost:5000", { withCredentials: true });
+const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:5000", { withCredentials: true });
 const PRESS_ANIMATION = "active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all duration-150";
 
 // 🚨 THE INVISIBLE SYNC ENGINE
@@ -42,7 +42,7 @@ function NetworkSync({ roomId }) {
 
         // Update moved/resized shapes
         if (updated) {
-          const updatedRecords = Object.values(updated).map(([from, to]) => to);
+          const updatedRecords = Object.values(updated).map(([, to]) => to);
           editor.store.put(updatedRecords);
         }
 
