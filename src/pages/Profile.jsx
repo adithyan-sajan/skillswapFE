@@ -14,6 +14,34 @@ import { getProfile } from "../services/AllApi";
 
 const SHARED_CARD_STYLE = "border-4 border-black dark:border-white bg-white dark:bg-[#111] rounded-xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]";
 
+// Pure mapper: API payload -> profile shape used by the UI.
+function mapProfile(dbData) {
+  return {
+    username: dbData.username,
+    avatarUrl: dbData.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&h=300&q=80",
+    rank: dbData.rank || "New Member",
+    rating: dbData.rating || 5.0,
+    location: dbData.location || "",
+    website: dbData.website || "",
+    bio: dbData.bio || "",
+
+    socials: dbData.socials || { github: "", linkedin: "", twitter: "" },
+    skillsOffered: dbData.skillsOffered || [],
+    skillsDesired: dbData.skillsDesired || [],
+
+    stats: {
+      totalSwaps: dbData.totalSessionsCompleted || 0,
+      hoursTaught: dbData.hoursTaught || 0,
+      hoursLearned: dbData.hoursLearned || 0
+    },
+
+    qualifications: [],
+    pendingRequests: [],
+    upcomingSessions: [],
+    reviews: []
+  };
+}
+
 export default function Profile() {
   const { token } = useAuth();
   const [activeTab, setActiveTab] = useState("schedule");
@@ -23,40 +51,14 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 2. THE CLEANED-UP AXIOS ENGINE
+  // Refresh path (e.g. after saving edits in the modal). Not called during render effects,
+  // so its synchronous setIsLoading is fine here.
   const fetchProfile = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      // Look how clean this is! The interceptor handles the token automatically.
-      const response = await getProfile(); 
-      const dbData = response.data; // Axios automatically parses JSON into .data
-      
-      // STRICT DATABASE MAPPING
-      setProfileData({
-        username: dbData.username,
-        avatarUrl: dbData.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&h=300&q=80",
-        rank: dbData.rank || "New Member",
-        rating: dbData.rating || 5.0,
-        location: dbData.location || "",
-        website: dbData.website || "",
-        bio: dbData.bio || "",
-        
-        socials: dbData.socials || { github: "", linkedin: "", twitter: "" },
-        skillsOffered: dbData.skillsOffered || [],
-        skillsDesired: dbData.skillsDesired || [],
-        
-        stats: { 
-          totalSwaps: dbData.totalSessionsCompleted || 0, 
-          hoursTaught: dbData.hoursTaught || 0, 
-          hoursLearned: dbData.hoursLearned || 0 
-        },
-        
-        qualifications: [],
-        pendingRequests: [],
-        upcomingSessions: [],
-        reviews: []
-      });
+      // The interceptor handles the token automatically.
+      const response = await getProfile(); // Axios automatically parses JSON into .data
+      setProfileData(mapProfile(response.data));
     } catch (err) {
       // Axios puts backend error messages inside err.response.data
       setError(err.response?.data?.message || "Failed to fetch identity matrix");
@@ -66,7 +68,28 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    if (token) fetchProfile();
+    if (!token) return;
+
+    let active = true;
+
+    async function loadProfile() {
+      try {
+        const response = await getProfile();
+        if (!active) return;
+        setProfileData(mapProfile(response.data));
+      } catch (err) {
+        if (!active) return;
+        setError(err.response?.data?.message || "Failed to fetch identity matrix");
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    }
+
+    loadProfile();
+
+    return () => {
+      active = false;
+    };
   }, [token]);
 
   if (isLoading) {
